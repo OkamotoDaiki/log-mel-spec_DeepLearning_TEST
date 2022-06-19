@@ -1,4 +1,4 @@
-# MFCC linearSVM TEST
+# mel-log spectrum Deep Learning TEST
  
 A program that extracts features with mel-log spectrum and finds the accuracy with deep learning.
  
