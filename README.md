@@ -1,6 +1,9 @@
 # mel-log spectrum Deep Learning TEST
  
 A program that extracts features with mel-log spectrum and finds the accuracy with deep learning.
+
+The definition of me-log spectrum is from the next paper.<br/>
+* Deep Learning for Audio Signal Processing: https://arxiv.org/abs/1905.00078
  
 # DEMO
  
