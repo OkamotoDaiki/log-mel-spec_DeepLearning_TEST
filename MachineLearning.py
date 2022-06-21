@@ -2,35 +2,25 @@
 import tensorflow as tf
 #Helpoer libraries
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 from sklearn import preprocessing
 
 import glob
 import soundfile
 from subscript import FFTTool, mellogspec
 
-def ComplileModel(training_list, label_list):
+def ComplileModel(X_train, y_train):
     """
     Compile machine learning model.
     Here is DNN model, classify number from 0 to 9.
 
     Attribute:
-        training_list: saved data training to deep learning.
-        label_list: saved labels training to deep learning.
+        X_train: saved data training to deep learning.
+        y_train: saved labels training to deep learning.
 
     Return:
         model: object of model using deep learning
-        X_test: data of test to use get_accuracy().
-        y_test: labels of test to use get_accuracy().
     """
-    X_train, X_test, y_train, y_test = train_test_split(
-        training_list, label_list, random_state=0
-    )
-    X_train = np.array(X_train)
-    X_test = np.array(X_test)
-    y_train = np.array(y_train)
-    y_test = np.array(y_test)
-
     model = tf.keras.Sequential([
         tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dense(10, activation='softmax')
@@ -41,7 +31,7 @@ def ComplileModel(training_list, label_list):
                     metrics=['accuracy'])
 
     model.fit(X_train, y_train, epochs=10)
-    return model, X_test, y_test
+    return model
 
 
 def get_accuracy(model, X_test, y_test):
@@ -58,8 +48,6 @@ def get_accuracy(model, X_test, y_test):
         test_value: accuracy value
     """
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
-
-    print('\nTest accuracy:', test_acc)
     return test_loss, test_acc
 
 
@@ -88,21 +76,39 @@ def get_max_nframe(fpath):
 if __name__=="__main__":
     fpath = "recordings/*.wav"
     files = glob.glob(fpath)
-    training_list = []
-    label_list = []
 
+
+    """Pre-processing"""
     max_nframe = get_max_nframe(fpath)
+    N = len(files)
+    training_list = []
+    label_list = np.array([])
 
     for fname in files:
         data, fs = soundfile.read(fname)
         data = FFTTool.ZeroPadding(data, max_nframe=max_nframe).process()
         window_data = np.hamming(len(data)) * data
-        mellogspec_array, mel_scale = mellogspec.get_mellogspec(window_data, fs)
-        mellogspec_array = preprocessing.scale(mellogspec_array)
+        mellogspec_array, mel_scale = mellogspec.get_mellogspec(window_data, fs) #generate data
+        mellogspec_array = preprocessing.scale(mellogspec_array) #normalization
         training_list.append(mellogspec_array)
         label = int(fname.split('/')[1].split('_')[0])
-        label_list.append(label)
+        label_list = np.append(label_list, label)
 
-    #Deep learning
-    compile_model, X_test, y_test = ComplileModel(training_list, label_list)
-    get_accuracy(compile_model, X_test, y_test)
+
+    """Deep Learning"""
+    from sklearn.model_selection import KFold
+    loss_list = np.array([])
+    acc_list = np.array([])
+    kf = KFold(n_splits=5, shuffle=True)
+    for train_index, val_index in kf.split(training_list, label_list):
+        train_data = np.array([training_list[i] for i in train_index])
+        train_label = np.array([label_list[i] for i in train_index])
+        val_data = np.array([training_list[i] for i in val_index])
+        val_label = np.array([label_list[i] for i in val_index])
+        model = ComplileModel(train_data, train_label)
+        test_loss, test_acc = get_accuracy(model, val_data, val_label)
+        loss_list = np.append(loss_list, test_loss)
+        acc_list = np.append(acc_list, test_acc)
+
+    print("Cross-validation loss: {}".format(np.mean(loss_list)))
+    print("Cross-validation Accuracy: {}".format(np.mean(acc_list)))
