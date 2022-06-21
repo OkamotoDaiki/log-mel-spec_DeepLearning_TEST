@@ -5,7 +5,7 @@ A program that extracts features with mel-log spectrum and finds the accuracy wi
 # DEMO
  
 """Machine Learning TEST"""<br>
-The accuracy was about `93.1%` when the dataset of audio sample was as follows and output to Deep Learning of the machine learning algorithm.
+The accuracy and the loss was about `92.6%` and `0.234` respectively using k-fold cross-validation when the dataset of audio sample was as follows and output to Deep Learning of the machine learning algorithm.
 
 * Name:  Jakobovski / Free Spoken Digit Dataset (FSDD)
 * LICENCE: Creative Commons Attribution-ShareAlike 4.0 International
