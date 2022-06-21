@@ -1,10 +1,7 @@
-# TensorFlow and tf.keras
 import tensorflow as tf
-#Helpoer libraries
 import numpy as np
 from sklearn.model_selection import KFold
 from sklearn import preprocessing
-
 import glob
 import soundfile
 from subscript import FFTTool, mellogspec
