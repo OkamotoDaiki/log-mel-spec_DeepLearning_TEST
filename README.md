@@ -19,7 +19,7 @@ The above result can be executed in `MachineLearning.py`. Download the audio sam
 # Features
  
 This program is a test program to prove my next program.
-Link: https://github.com/OkamotoDaiki/mel-log_spectrum
+Link: https://github.com/OkamotoDaiki/log-mel_spectrum
 
  
 # Requirement
