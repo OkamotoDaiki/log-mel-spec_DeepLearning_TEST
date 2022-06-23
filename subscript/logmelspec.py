@@ -1,15 +1,15 @@
 import numpy as np
 from subscript import ConvertHzMel
 
-def get_mellogspec(data, fs):
+def get_logmelspec(data, fs):
     """
-    Calculation of mel-log spectrum.
+    Calculation of log_mel spectrum.
 
     Attributes:
         data: time series data.
 
     Returns:
-        mel_log_spec: mel-log spectrum data.
+        log_mel_spec: log_mel spectrum data.
     """
     convert_hz_mel = ConvertHzMel.ConvertHzMel()
     N = len(data)
@@ -18,8 +18,8 @@ def get_mellogspec(data, fs):
 
     dft = np.abs(np.fft.fft(data))[:int(N/2)]
     mel_spec = convert_hz_mel.hz2mel(dft)
-    mel_log_spec = 10*np.log10(mel_spec**2)
-    return mel_log_spec, mel_scale
+    log_mel_spec = 10*np.log10(mel_spec**2)
+    return log_mel_spec, mel_scale
 
 
 if __name__=="__main__":
@@ -28,14 +28,14 @@ if __name__=="__main__":
     import matplotlib.pyplot as plt
     fname = 'recordings/0_jackson_0.wav' #any wav file.
     data, fs = soundfile.read(fname)
-    mellogspec_array, mel_scale = get_mellogspec(data, fs)
+    logmelspec_array, mel_scale = get_logmelspec(data, fs)
     
     plt.subplot(121)
-    plt.plot(mel_scale, mellogspec_array)
+    plt.plot(mel_scale, logmelspec_array)
     plt.xlabel("Mel")
     plt.ylabel("log amplitude spectrum [dB]")
 
-    ##DFT plot
+    #DFT plot
     N = len(data)
     dft = np.abs(np.fft.fft(data))[:int(N/2)]
     spec = 10*np.log10(dft**2)

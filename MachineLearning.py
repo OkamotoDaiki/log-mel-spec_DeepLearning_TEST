@@ -4,7 +4,7 @@ from sklearn.model_selection import KFold
 from sklearn import preprocessing
 import glob
 import soundfile
-from subscript import FFTTool, mellogspec
+from subscript import FFTTool, logmelspec
 
 def ComplileModel(X_train, y_train):
     """
@@ -85,9 +85,9 @@ if __name__=="__main__":
         data, fs = soundfile.read(fname)
         data = FFTTool.ZeroPadding(data, max_nframe=max_nframe).process()
         window_data = np.hamming(len(data)) * data
-        mellogspec_array, mel_scale = mellogspec.get_mellogspec(window_data, fs) #generate data
-        mellogspec_array = preprocessing.scale(mellogspec_array) #normalization
-        training_list.append(mellogspec_array)
+        logmelspec_array, mel_scale = logmelspec.get_logmelspec(window_data, fs) #generate data
+        logmelspec_array = preprocessing.scale(logmelspec_array) #normalization
+        training_list.append(logmelspec_array)
         label = int(fname.split('/')[1].split('_')[0])
         label_list = np.append(label_list, label)
 
