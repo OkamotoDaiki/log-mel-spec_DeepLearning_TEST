@@ -5,6 +5,8 @@ A program that extracts features with log-mel spectrum and finds the accuracy wi
 The definition of log-mel spectrum is from the next paper.<br/>
 * Deep Learning for Audio Signal Processing: https://arxiv.org/abs/1905.00078
  
+Commentary article[JP]:https://qiita.com/Oka_D/items/9afd11e501a1c540bc1b 
+
 # DEMO
  
 """Machine Learning TEST"""<br>
